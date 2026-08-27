@@ -104,6 +104,10 @@ if st.button(
     use_container_width=True
 ):
 
+    # -----------------------------
+    # Duomenų patikra
+    # -----------------------------
+
     if bilietai_7 < bilietai_1:
         st.error(
             "Parduotų bilietų skaičius po 7 dienų "
@@ -132,8 +136,8 @@ if st.button(
     if prekybos_dienos < 30:
         st.error(
             "Bilietų prekybos laikotarpis turi būti "
-            "ne trumpesnis kaip 30 dienų, nes prognozės "
-            "modelis naudoja pardavimus po 30 dienų."
+            "ne trumpesnis kaip 30 dienų, nes modelis "
+            "naudoja pardavimus po 30 dienų."
         )
         st.stop()
 
@@ -287,44 +291,43 @@ if st.button(
             )
         )
 
-    st.progress(
-        prognoze
-    )
+    st.progress(prognoze)
 
     st.divider()
 
     # -----------------------------
     # Apskaičiuoti rodikliai
     # -----------------------------
-st.subheader(
-    "Apskaičiuoti rodikliai"
-)
 
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.metric(
-        "Užpildymas po 30 d.",
-        f"{uzpildytumas_po_men:.1%}"
+    st.subheader(
+        "Apskaičiuoti rodikliai"
     )
 
-with col2:
-    st.metric(
-        "Pardavimai po 1 d.",
-        f"{bilietai_1}"
-    )
+    col1, col2, col3, col4 = st.columns(4)
 
-with col3:
-    st.metric(
-        "Pardavimai po 7 d.",
-        f"{bilietai_7}"
-    )
+    with col1:
+        st.metric(
+            "Užpildymas po 30 d.",
+            f"{uzpildytumas_po_men:.1%}"
+        )
 
-with col4:
-    st.metric(
-        "Pardavimai po 30 d.",
-        f"{bilietai_30}"
-    )
+    with col2:
+        st.metric(
+            "Pardavimai po 1 d.",
+            f"{bilietai_1}"
+        )
+
+    with col3:
+        st.metric(
+            "Pardavimai po 7 d.",
+            f"{bilietai_7}"
+        )
+
+    with col4:
+        st.metric(
+            "Pardavimai po 30 d.",
+            f"{bilietai_30}"
+        )
 
     st.divider()
 
