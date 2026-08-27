@@ -26,18 +26,12 @@ renginio_data = st.date_input(
     value=date.today()
 )
 
-siandien = date.today()
-
-if renginio_data >= siandien:
-    dienos = (renginio_data - siandien).days
-else:
-    dienos = 0
-
 if renginio_data < bilietu_paleidimo_data:
     st.error("Renginio data negali būti ankstesnė už bilietų prekybos pradžios datą.")
     st.stop()
 
-prekybos_dienos = (renginio_data - bilietu_paleidimo_data).days
+dienos = (renginio_data - bilietu_paleidimo_data).days
+prekybos_dienos = dienos
 
 col1, col2 = st.columns(2)
 
