@@ -112,9 +112,9 @@ if st.button("PROGNOZUOTI", use_container_width=True):
 pokytis_1_7 = (bilietai_7 - bilietai_1) / (bilietai_1 + 1)
 pokytis_1_30 = (bilietai_30 - bilietai_1) / (bilietai_1 + 1)
 
-    uzpildytumas_po_men = bilietai_30 / talpa
+uzpildytumas_po_men = bilietai_30 / talpa
 
-    arena_kodas = 1 if arena == "Arena" else 0
+arena_kodas = 1 if arena == "Arena" else 0
 
     coef = {
         "const": 0.2951,
