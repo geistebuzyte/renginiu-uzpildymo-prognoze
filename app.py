@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 from scipy.special import expit
+from datetime import date
 
 st.set_page_config(
     page_title="Renginio lankomumo prognozė",
@@ -13,7 +14,48 @@ st.write("Įveskite renginio duomenis ir gaukite prognozuojamą galutinį užpil
 
 st.divider()
 
-st.subheader("Renginio duomenys")
+st.subheader("📅 Renginio datos")
+
+bilietu_paleidimo_data = st.date_input(
+    "Bilietų prekybos pradžios data",
+    value=date.today()
+)
+
+renginio_data = st.date_input(
+    "Renginio data",
+    value=date.today()
+)
+
+siandien = date.today()
+
+if renginio_data >= siandien:
+    dienos = (renginio_data - siandien).days
+else:
+    dienos = 0
+
+if renginio_data < bilietu_paleidimo_data:
+    st.error("Renginio data negali būti ankstesnė už bilietų prekybos pradžios datą.")
+    st.stop()
+
+prekybos_dienos = (renginio_data - bilietu_paleidimo_data).days
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.metric(
+        "Iki renginio liko",
+        f"{dienos} d."
+    )
+
+with col2:
+    st.metric(
+        "Bilietų prekybos laikotarpis",
+        f"{prekybos_dienos} d."
+    )
+
+st.divider()
+
+st.subheader("🎫 Renginio duomenys")
 
 talpa = st.number_input(
     "Renginio talpa",
@@ -43,13 +85,6 @@ bilietai_1 = st.number_input(
     step=1
 )
 
-dienos = st.number_input(
-    "Kiek dienų liko iki renginio?",
-    min_value=0,
-    value=30,
-    step=1
-)
-
 arena = st.selectbox(
     "Renginio vieta",
     ["Arena", "Ne arena"]
@@ -59,10 +94,6 @@ st.divider()
 
 if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
-    # -----------------------------
-    # Duomenų patikra
-    # -----------------------------
-
     if bilietai_1 == 0:
         st.error(
             "Negalima apskaičiuoti pardavimų pokyčio, "
@@ -70,29 +101,20 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
         )
         st.stop()
 
-    if bilietai_30 > bilietai_7:
-        st.warning(
-            "Patikrinkite duomenis: parduotų bilietų skaičius "
-            "likus 30 dienų paprastai neturėtų būti didesnis "
-            "nei likus 7 dienoms."
-        )
-
-    if bilietai_7 > bilietai_1:
-        st.warning(
-            "Patikrinkite duomenis: parduotų bilietų skaičius "
-            "likus 7 dienoms paprastai neturėtų būti didesnis "
-            "nei likus 1 dienai."
-        )
-
+    if bilietai_30 < bilietai_7: 
+        st.warning( "Patikrinkite duomenis: parduotų bilietų skaičius "
+                   "likus 30 dienų paprastai neturėtų būti didesnis "
+                   "nei likus 7 dienoms." ) 
+    if bilietai_7 < bilietai_1: 
+        st.warning( "Patikrinkite duomenis: parduotų bilietų skaičius "
+                   "likus 7 dienoms paprastai neturėtų būti didesnis " 
+                   "nei likus 1 dienai." )
+        
     if bilietai_30 > talpa or bilietai_7 > talpa or bilietai_1 > talpa:
         st.error(
             "Parduotų bilietų skaičius negali būti didesnis už renginio talpą."
         )
         st.stop()
-
-    # -----------------------------
-    # Modelio kintamųjų skaičiavimas
-    # -----------------------------
 
     eps = 1e-6
 
@@ -110,10 +132,6 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
     arena_kodas = 1 if arena == "Arena" else 0
 
-    # -----------------------------
-    # Tavo Beta regresijos koeficientai
-    # -----------------------------
-
     coef = {
         "const": 0.2951,
         "Talpa": -0.1183,
@@ -123,10 +141,6 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
         "Užpildytumas po mėn": 1.3086,
         "Arena": 0.2813
     }
-
-    # -----------------------------
-    # Tavo StandardScaler parametrai
-    # -----------------------------
 
     means = {
         "Talpa": 3984.6774193548385,
@@ -146,10 +160,6 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
         "Arena": 0.49973978867804687
     }
 
-    # -----------------------------
-    # Standartizavimas
-    # -----------------------------
-
     X = {
         "Talpa": talpa,
         "Pokytis_1_7": pokytis_1_7,
@@ -167,10 +177,6 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
             / stds[variable]
         )
 
-    # -----------------------------
-    # Beta regresijos prognozė
-    # -----------------------------
-
     linear_predictor = (
         coef["const"]
         + coef["Talpa"] * X_scaled["Talpa"]
@@ -183,13 +189,11 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
     prognoze = expit(linear_predictor)
 
+    prognoze = float(np.clip(prognoze, 0, 1))
+
     prognozuojami_lankytojai = round(
         prognoze * talpa
     )
-
-    # -----------------------------
-    # Rezultatas
-    # -----------------------------
 
     st.success("Prognozė apskaičiuota!")
 
@@ -209,9 +213,7 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
             f"{prognozuojami_lankytojai:,}".replace(",", " ")
         )
 
-    st.progress(
-        min(max(float(prognoze), 0), 1)
-    )
+    st.progress(prognoze)
 
     st.divider()
 
@@ -235,6 +237,30 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
         st.metric(
             "Pokytis 1–30 d.",
             f"{pokytis_1_30:.1%}"
+        )
+
+    st.divider()
+
+    st.subheader("🗓️ Prognozės informacija")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Prognozės data",
+            siandien.strftime("%Y-%m-%d")
+        )
+
+    with col2:
+        st.metric(
+            "Renginio data",
+            renginio_data.strftime("%Y-%m-%d")
+        )
+
+    with col3:
+        st.metric(
+            "Dienos iki renginio",
+            f"{dienos} d."
         )
 
     st.divider()
