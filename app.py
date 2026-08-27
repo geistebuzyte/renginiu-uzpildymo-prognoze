@@ -92,21 +92,14 @@ st.divider()
 
 if st.button("PROGNOZUOTI", use_container_width=True):
 
-    if bilietai_1 == 0:
-        st.error(
-            "Negalima apskaičiuoti pardavimų pokyčio, "
-            "nes likus 1 dienai parduotų bilietų skaičius yra 0."
-        )
-        st.stop()
-
     if bilietai_30 < bilietai_7: 
         st.warning( "Patikrinkite duomenis: parduotų bilietų skaičius "
-                   "likus 30 dienų paprastai neturėtų būti didesnis "
-                   "nei likus 7 dienoms." ) 
+                   "likus 7 dienoms paprastai neturėtų būti didesnis "
+                   "nei likus 30 dienų." ) 
     if bilietai_7 < bilietai_1: 
         st.warning( "Patikrinkite duomenis: parduotų bilietų skaičius "
-                   "likus 7 dienoms paprastai neturėtų būti didesnis " 
-                   "nei likus 1 dienai." )
+                   "likus 1 dienai paprastai neturėtų būti didesnis " 
+                   "nei likus 7 dienoms." )
         
     if bilietai_30 > talpa or bilietai_7 > talpa or bilietai_1 > talpa:
         st.error(
