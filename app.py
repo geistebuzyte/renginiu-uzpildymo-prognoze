@@ -16,11 +16,15 @@ st.divider()
 
 st.subheader("📅 Renginio datos")
 
-from datetime import date
+bilietu_paleidimo_data = st.date_input(
+    "Bilietų prekybos pradžios data",
+    value=date.today()
+)
 
-# -----------------------------
-# Datos skaičiavimas
-# -----------------------------
+renginio_data = st.date_input(
+    "Renginio data",
+    value=date.today()
+)
 
 siandien = date.today()
 
@@ -28,10 +32,10 @@ if renginio_data < bilietu_paleidimo_data:
     st.error("Renginio data negali būti ankstesnė už bilietų prekybos pradžios datą.")
     st.stop()
 
-# Realus laikas iki renginio nuo šiandien
+# Tikras dienų skaičius nuo šiandien iki renginio
 dienos_iki_renginio = max((renginio_data - siandien).days, 0)
 
-# Bilietų prekybos laikotarpis – naudojamas prognozavimo modeliui
+# Visas bilietų prekybos laikotarpis
 prekybos_dienos = (renginio_data - bilietu_paleidimo_data).days
 
 col1, col2 = st.columns(2)
