@@ -9,7 +9,10 @@ st.set_page_config(
 )
 
 st.title("Renginio lankomumo prognozė")
-st.write("Įveskite renginio duomenis ir gaukite prognozuojamą galutinį užpildymą bei lankytojų skaičių.")
+st.write(
+    "Įveskite renginio duomenis ir gaukite prognozuojamą "
+    "galutinį užpildymą bei lankytojų skaičių."
+)
 
 st.divider()
 
@@ -28,14 +31,20 @@ renginio_data = st.date_input(
 siandien = date.today()
 
 if renginio_data < bilietu_paleidimo_data:
-    st.error("Renginio data negali būti ankstesnė už bilietų prekybos pradžios datą.")
+    st.error(
+        "Renginio data negali būti ankstesnė už "
+        "bilietų prekybos pradžios datą."
+    )
     st.stop()
 
-# Tikras dienų skaičius nuo šiandien iki renginio
-dienos_iki_renginio = max((renginio_data - siandien).days, 0)
+dienos_iki_renginio = max(
+    (renginio_data - siandien).days,
+    0
+)
 
-# Visas bilietų prekybos laikotarpis
-prekybos_dienos = (renginio_data - bilietu_paleidimo_data).days
+prekybos_dienos = (
+    renginio_data - bilietu_paleidimo_data
+).days
 
 col1, col2 = st.columns(2)
 
@@ -62,24 +71,24 @@ talpa = st.number_input(
     step=100
 )
 
-bilietai_30 = st.number_input(
-    "Parduotų bilietų skaičius po 30 dienų",
+bilietai_1 = st.number_input(
+    "Parduotų bilietų skaičius po 1 dienos",
     min_value=0,
-    value=3000,
+    value=0,
     step=1
 )
 
 bilietai_7 = st.number_input(
     "Parduotų bilietų skaičius po 7 dienų",
     min_value=0,
-    value=5000,
+    value=0,
     step=1
 )
 
-bilietai_1 = st.number_input(
-    "Parduotų bilietų skaičius po 1 dienos",
+bilietai_30 = st.number_input(
+    "Parduotų bilietų skaičius po 30 dienų",
     min_value=0,
-    value=6000,
+    value=0,
     step=1
 )
 
@@ -90,33 +99,73 @@ arena = st.selectbox(
 
 st.divider()
 
-if st.button("PROGNOZUOTI", use_container_width=True):
+if st.button(
+    "PROGNOZUOTI",
+    use_container_width=True
+):
 
-    if bilietai_30 < bilietai_7: 
-        st.warning( "Patikrinkite duomenis: parduotų bilietų skaičius "
-                   "likus 7 dienoms paprastai neturėtų būti didesnis "
-                   "nei likus 30 dienų." ) 
-    if bilietai_7 < bilietai_1: 
-        st.warning( "Patikrinkite duomenis: parduotų bilietų skaičius "
-                   "likus 1 dienai paprastai neturėtų būti didesnis " 
-                   "nei likus 7 dienoms." )
-        
-    if bilietai_30 > talpa or bilietai_7 > talpa or bilietai_1 > talpa:
+    if bilietai_7 < bilietai_1:
         st.error(
-            "Parduotų bilietų skaičius negali būti didesnis už renginio talpą."
+            "Parduotų bilietų skaičius po 7 dienų "
+            "negali būti mažesnis nei po 1 dienos."
         )
         st.stop()
 
-    eps = 1e-6
+    if bilietai_30 < bilietai_7:
+        st.error(
+            "Parduotų bilietų skaičius po 30 dienų "
+            "negali būti mažesnis nei po 7 dienų."
+        )
+        st.stop()
 
-pokytis_1_7 = (bilietai_7 - bilietai_1) / (bilietai_1 + 1)
-pokytis_1_30 = (bilietai_30 - bilietai_1) / (bilietai_1 + 1)
+    if (
+        bilietai_1 > talpa
+        or bilietai_7 > talpa
+        or bilietai_30 > talpa
+    ):
+        st.error(
+            "Parduotų bilietų skaičius negali būti "
+            "didesnis už renginio talpą."
+        )
+        st.stop()
 
-uzpildytumas_po_men = bilietai_30 / talpa
+    if prekybos_dienos < 30:
+        st.error(
+            "Bilietų prekybos laikotarpis turi būti "
+            "ne trumpesnis kaip 30 dienų, nes prognozės "
+            "modelis naudoja pardavimus po 30 dienų."
+        )
+        st.stop()
 
-arena_kodas = 1 if arena == "Arena" else 0
+    # -----------------------------
+    # Modelio kintamieji
+    # -----------------------------
 
-coef = {
+    eps_change = 1e-6
+
+    pokytis_1_7 = (
+        (bilietai_7 - bilietai_1)
+        / (bilietai_1 + eps_change)
+    )
+
+    pokytis_1_30 = (
+        (bilietai_30 - bilietai_1)
+        / (bilietai_1 + eps_change)
+    )
+
+    uzpildytumas_po_men = (
+        bilietai_30 / talpa
+    )
+
+    arena_kodas = (
+        1 if arena == "Arena" else 0
+    )
+
+    # -----------------------------
+    # Beta regresijos koeficientai
+    # -----------------------------
+
+    coef = {
         "const": 0.2951,
         "Talpa": -0.1183,
         "Pokytis_1_7": 0.4962,
@@ -126,7 +175,11 @@ coef = {
         "Arena": 0.2813
     }
 
-means = {
+    # -----------------------------
+    # StandardScaler parametrai
+    # -----------------------------
+
+    means = {
         "Talpa": 3984.6774193548385,
         "Pokytis_1_7": 2.80322621,
         "Pokytis_1_30": 8638710.45364094,
@@ -135,7 +188,7 @@ means = {
         "Arena": 0.4838709677419355
     }
 
-stds = {
+    stds = {
         "Talpa": 2608.5791755851624,
         "Pokytis_1_7": 86947696.79579352,
         "Pokytis_1_30": 219556955.3296927,
@@ -144,7 +197,11 @@ stds = {
         "Arena": 0.49973978867804687
     }
 
-X = {
+    # -----------------------------
+    # Duomenys modeliui
+    # -----------------------------
+
+    X = {
         "Talpa": talpa,
         "Pokytis_1_7": pokytis_1_7,
         "Pokytis_1_30": pokytis_1_30,
@@ -153,59 +210,100 @@ X = {
         "Arena": arena_kodas
     }
 
-X_scaled = {}
+    # -----------------------------
+    # Standartizavimas
+    # -----------------------------
 
-for variable in X:
+    X_scaled = {}
+
+    for variable in X:
         X_scaled[variable] = (
             (X[variable] - means[variable])
             / stds[variable]
         )
 
-linear_predictor = (
+    # -----------------------------
+    # Beta regresijos prognozė
+    # -----------------------------
+
+    linear_predictor = (
         coef["const"]
-        + coef["Talpa"] * X_scaled["Talpa"]
-        + coef["Pokytis_1_7"] * X_scaled["Pokytis_1_7"]
-        + coef["Pokytis_1_30"] * X_scaled["Pokytis_1_30"]
-        + coef["Iki renginio dienos:"] * X_scaled["Iki renginio dienos:"]
-        + coef["Užpildytumas po mėn"] * X_scaled["Užpildytumas po mėn"]
-        + coef["Arena"] * X_scaled["Arena"]
+        + coef["Talpa"]
+        * X_scaled["Talpa"]
+        + coef["Pokytis_1_7"]
+        * X_scaled["Pokytis_1_7"]
+        + coef["Pokytis_1_30"]
+        * X_scaled["Pokytis_1_30"]
+        + coef["Iki renginio dienos:"]
+        * X_scaled["Iki renginio dienos:"]
+        + coef["Užpildytumas po mėn"]
+        * X_scaled["Užpildytumas po mėn"]
+        + coef["Arena"]
+        * X_scaled["Arena"]
     )
 
-prognoze = expit(linear_predictor)
+    prognoze = expit(
+        linear_predictor
+    )
 
-prognoze = float(np.clip(prognoze, 0, 1))
+    prognoze = float(
+        np.clip(
+            prognoze,
+            0,
+            1
+        )
+    )
 
-prognozuojami_lankytojai = round(
+    prognozuojami_lankytojai = round(
         prognoze * talpa
     )
 
-st.success("Prognozė apskaičiuota!")
+    # -----------------------------
+    # Prognozės rezultatas
+    # -----------------------------
 
-st.subheader("Prognozės rezultatas")
+    st.success(
+        "Prognozė apskaičiuota."
+    )
 
-col1, col2 = st.columns(2)
+    st.subheader(
+        "Prognozės rezultatas"
+    )
 
-with col1:
+    col1, col2 = st.columns(2)
+
+    with col1:
         st.metric(
             "Prognozuojamas galutinis užpildymas",
             f"{prognoze:.1%}"
         )
 
-with col2:
+    with col2:
         st.metric(
             "Prognozuojamas lankytojų skaičius",
-            f"{prognozuojami_lankytojai:,}".replace(",", " ")
+            f"{prognozuojami_lankytojai:,}".replace(
+                ",",
+                " "
+            )
         )
 
-st.progress(prognoze)
+    st.progress(
+        prognoze
+    )
 
-st.divider()
+    st.divider()
 
-st.subheader("Apskaičiuoti rodikliai")
+    # -----------------------------
+    # Apskaičiuoti rodikliai
+    # -----------------------------
 
-col1, col2, col3 = st.columns(3)
+    st.subheader(
+        "Apskaičiuoti rodikliai"
+    )
 
-with col1:
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
         st.metric(
             "Užpildymas po 30 d.",
             f"{uzpildytumas_po_men:.1%}"
@@ -223,35 +321,44 @@ with col1:
             f"{pokytis_1_30:.1%}"
         )
 
-st.divider()
+    st.divider()
 
-st.subheader("Prognozės informacija")
+    # -----------------------------
+    # Prognozės informacija
+    # -----------------------------
 
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric(
-        "Prognozės data",
-        siandien.strftime("%Y-%m-%d")
+    st.subheader(
+        "Prognozės informacija"
     )
 
-with col2:
-    st.metric(
-        "Renginio data",
-        renginio_data.strftime("%Y-%m-%d")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Prognozės data",
+            siandien.strftime("%Y-%m-%d")
+        )
+
+    with col2:
+        st.metric(
+            "Renginio data",
+            renginio_data.strftime("%Y-%m-%d")
+        )
+
+    with col3:
+        st.metric(
+            "Iki renginio liko",
+            f"{dienos_iki_renginio} d."
+        )
+
+    st.divider()
+
+    st.caption(
+        "Prognozė apskaičiuota naudojant Beta regresijos "
+        "modelį, sukurtą remiantis ankstesnių renginių "
+        "duomenimis."
     )
 
-with col3:
-    st.metric(
-        "Iki renginio liko",
-        f"{dienos_iki_renginio} d."
+    st.caption(
+        "Prognozavimo sistemą sukūrė Geistė Buzytė."
     )
-
-st.divider()
-
-st.caption(
-    "Prognozė apskaičiuota naudojant Beta regresijos modelį, "
-    "sukurtą remiantis ankstesnių renginių duomenimis. "
-    
-    "Prognozavimo sistemą sukūrė Geistė Buzytė."
-)
