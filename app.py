@@ -63,21 +63,21 @@ talpa = st.number_input(
 )
 
 bilietai_30 = st.number_input(
-    "Parduotų bilietų skaičius likus 30 dienų",
+    "Parduotų bilietų skaičius po 30 dienų",
     min_value=0,
     value=3000,
     step=1
 )
 
 bilietai_7 = st.number_input(
-    "Parduotų bilietų skaičius likus 7 dienoms",
+    "Parduotų bilietų skaičius po 7 dienų",
     min_value=0,
     value=5000,
     step=1
 )
 
 bilietai_1 = st.number_input(
-    "Parduotų bilietų skaičius likus 1 dienai",
+    "Parduotų bilietų skaičius po 1 dienos",
     min_value=0,
     value=6000,
     step=1
@@ -116,15 +116,8 @@ if st.button("PROGNOZUOTI", use_container_width=True):
 
     eps = 1e-6
 
-    pokytis_1_7 = (
-        (bilietai_7 - bilietai_1)
-        / (bilietai_1 + eps)
-    )
-
-    pokytis_1_30 = (
-        (bilietai_30 - bilietai_1)
-        / (bilietai_1 + eps)
-    )
+pokytis_1_7 = (bilietai_7 - bilietai_1) / (bilietai_1 + 1)
+pokytis_1_30 = (bilietai_30 - bilietai_1) / (bilietai_1 + 1)
 
     uzpildytumas_po_men = bilietai_30 / talpa
 
