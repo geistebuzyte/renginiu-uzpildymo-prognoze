@@ -16,29 +16,30 @@ st.divider()
 
 st.subheader("📅 Renginio datos")
 
-bilietu_paleidimo_data = st.date_input(
-    "Bilietų prekybos pradžios data",
-    value=date.today()
-)
+from datetime import date
 
-renginio_data = st.date_input(
-    "Renginio data",
-    value=date.today()
-)
+# -----------------------------
+# Datos skaičiavimas
+# -----------------------------
+
+siandien = date.today()
 
 if renginio_data < bilietu_paleidimo_data:
     st.error("Renginio data negali būti ankstesnė už bilietų prekybos pradžios datą.")
     st.stop()
 
-dienos = (renginio_data - bilietu_paleidimo_data).days
-prekybos_dienos = dienos
+# Realus laikas iki renginio nuo šiandien
+dienos_iki_renginio = max((renginio_data - siandien).days, 0)
+
+# Bilietų prekybos laikotarpis – naudojamas prognozavimo modeliui
+prekybos_dienos = (renginio_data - bilietu_paleidimo_data).days
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.metric(
         "Iki renginio liko",
-        f"{dienos} d."
+        f"{dienos_iki_renginio} d."
     )
 
 with col2:
@@ -158,7 +159,7 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
         "Talpa": talpa,
         "Pokytis_1_7": pokytis_1_7,
         "Pokytis_1_30": pokytis_1_30,
-        "Iki renginio dienos:": dienos,
+        "Iki renginio dienos:": prekybos_dienos,
         "Užpildytumas po mėn": uzpildytumas_po_men,
         "Arena": arena_kodas
     }
@@ -235,27 +236,27 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
     st.divider()
 
-    st.subheader("🗓️ Prognozės informacija")
+   st.subheader("📅 Prognozės informacija")
 
-    col1, col2, col3 = st.columns(3)
+col1, col2, col3 = st.columns(3)
 
-    with col1:
-        st.metric(
-            "Prognozės data",
-            siandien.strftime("%Y-%m-%d")
-        )
+with col1:
+    st.metric(
+        "Prognozės data",
+        siandien.strftime("%Y-%m-%d")
+    )
 
-    with col2:
-        st.metric(
-            "Renginio data",
-            renginio_data.strftime("%Y-%m-%d")
-        )
+with col2:
+    st.metric(
+        "Renginio data",
+        renginio_data.strftime("%Y-%m-%d")
+    )
 
-    with col3:
-        st.metric(
-            "Dienos iki renginio",
-            f"{dienos} d."
-        )
+with col3:
+    st.metric(
+        "Iki renginio liko",
+        f"{dienos_iki_renginio} d."
+    )
 
     st.divider()
 
