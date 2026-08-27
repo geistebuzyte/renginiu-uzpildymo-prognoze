@@ -266,6 +266,7 @@ st.divider()
 
 st.caption(
     "Prognozė apskaičiuota naudojant Beta regresijos modelį, "
-    "sukurtą remiantis ankstesnių renginių duomenimis."
+    "sukurtą remiantis ankstesnių renginių duomenimis. "
+    
     "Prognozavimo sistemą sukūrė Geistė Buzytė."
 )
