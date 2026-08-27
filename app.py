@@ -296,12 +296,11 @@ if st.button(
     # -----------------------------
     # Apskaičiuoti rodikliai
     # -----------------------------
-
 st.subheader(
     "Apskaičiuoti rodikliai"
 )
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.metric(
@@ -311,14 +310,20 @@ with col1:
 
 with col2:
     st.metric(
-        "Pokytis 1–7 d.",
-        f"{pokytis_1_7:.1%}"
+        "Pardavimai po 1 d.",
+        f"{bilietai_1}"
     )
 
 with col3:
     st.metric(
-        "Pokytis 1–30 d.",
-        f"{pokytis_1_30:.1%}"
+        "Pardavimai po 7 d.",
+        f"{bilietai_7}"
+    )
+
+with col4:
+    st.metric(
+        "Pardavimai po 30 d.",
+        f"{bilietai_30}"
     )
 
     st.divider()
