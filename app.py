@@ -116,7 +116,7 @@ uzpildytumas_po_men = bilietai_30 / talpa
 
 arena_kodas = 1 if arena == "Arena" else 0
 
-    coef = {
+coef = {
         "const": 0.2951,
         "Talpa": -0.1183,
         "Pokytis_1_7": 0.4962,
@@ -126,7 +126,7 @@ arena_kodas = 1 if arena == "Arena" else 0
         "Arena": 0.2813
     }
 
-    means = {
+means = {
         "Talpa": 3984.6774193548385,
         "Pokytis_1_7": 2.80322621,
         "Pokytis_1_30": 8638710.45364094,
@@ -135,7 +135,7 @@ arena_kodas = 1 if arena == "Arena" else 0
         "Arena": 0.4838709677419355
     }
 
-    stds = {
+stds = {
         "Talpa": 2608.5791755851624,
         "Pokytis_1_7": 86947696.79579352,
         "Pokytis_1_30": 219556955.3296927,
@@ -144,7 +144,7 @@ arena_kodas = 1 if arena == "Arena" else 0
         "Arena": 0.49973978867804687
     }
 
-    X = {
+X = {
         "Talpa": talpa,
         "Pokytis_1_7": pokytis_1_7,
         "Pokytis_1_30": pokytis_1_30,
@@ -153,15 +153,15 @@ arena_kodas = 1 if arena == "Arena" else 0
         "Arena": arena_kodas
     }
 
-    X_scaled = {}
+X_scaled = {}
 
-    for variable in X:
+for variable in X:
         X_scaled[variable] = (
             (X[variable] - means[variable])
             / stds[variable]
         )
 
-    linear_predictor = (
+linear_predictor = (
         coef["const"]
         + coef["Talpa"] * X_scaled["Talpa"]
         + coef["Pokytis_1_7"] * X_scaled["Pokytis_1_7"]
@@ -171,41 +171,41 @@ arena_kodas = 1 if arena == "Arena" else 0
         + coef["Arena"] * X_scaled["Arena"]
     )
 
-    prognoze = expit(linear_predictor)
+prognoze = expit(linear_predictor)
 
-    prognoze = float(np.clip(prognoze, 0, 1))
+prognoze = float(np.clip(prognoze, 0, 1))
 
-    prognozuojami_lankytojai = round(
+prognozuojami_lankytojai = round(
         prognoze * talpa
     )
 
-    st.success("Prognozė apskaičiuota!")
+st.success("Prognozė apskaičiuota!")
 
-    st.subheader("Prognozės rezultatas")
+st.subheader("Prognozės rezultatas")
 
-    col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 
-    with col1:
+with col1:
         st.metric(
             "Prognozuojamas galutinis užpildymas",
             f"{prognoze:.1%}"
         )
 
-    with col2:
+with col2:
         st.metric(
             "Prognozuojamas lankytojų skaičius",
             f"{prognozuojami_lankytojai:,}".replace(",", " ")
         )
 
-    st.progress(prognoze)
+st.progress(prognoze)
 
-    st.divider()
+st.divider()
 
-    st.subheader("Apskaičiuoti rodikliai")
+st.subheader("Apskaičiuoti rodikliai")
 
-    col1, col2, col3 = st.columns(3)
+col1, col2, col3 = st.columns(3)
 
-    with col1:
+with col1:
         st.metric(
             "Užpildymas po 30 d.",
             f"{uzpildytumas_po_men:.1%}"
