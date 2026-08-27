@@ -234,9 +234,9 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
             f"{pokytis_1_30:.1%}"
         )
 
-    st.divider()
+st.divider()
 
-   st.subheader("📅 Prognozės informacija")
+st.subheader("📅 Prognozės informacija")
 
 col1, col2, col3 = st.columns(3)
 
@@ -258,9 +258,9 @@ with col3:
         f"{dienos_iki_renginio} d."
     )
 
-    st.divider()
+st.divider()
 
-    st.caption(
-        "Prognozė apskaičiuota naudojant Beta regresijos modelį, "
-        "sukurtą remiantis ankstesnių renginių duomenimis."
-    )
+st.caption(
+    "Prognozė apskaičiuota naudojant Beta regresijos modelį, "
+    "sukurtą remiantis ankstesnių renginių duomenimis."
+)
