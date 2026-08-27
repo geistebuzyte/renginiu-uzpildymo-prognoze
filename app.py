@@ -5,16 +5,15 @@ from datetime import date
 
 st.set_page_config(
     page_title="Renginio lankomumo prognozė",
-    page_icon="🎫",
     layout="centered"
 )
 
-st.title("🎫 Renginio lankomumo prognozė")
+st.title("Renginio lankomumo prognozė")
 st.write("Įveskite renginio duomenis ir gaukite prognozuojamą galutinį užpildymą bei lankytojų skaičių.")
 
 st.divider()
 
-st.subheader("📅 Renginio datos")
+st.subheader("Renginio datos")
 
 bilietu_paleidimo_data = st.date_input(
     "Bilietų prekybos pradžios data",
@@ -54,7 +53,7 @@ with col2:
 
 st.divider()
 
-st.subheader("🎫 Renginio duomenys")
+st.subheader("Renginio duomenys")
 
 talpa = st.number_input(
     "Renginio talpa",
@@ -91,7 +90,7 @@ arena = st.selectbox(
 
 st.divider()
 
-if st.button("🔮 PROGNOZUOTI", use_container_width=True):
+if st.button("PROGNOZUOTI", use_container_width=True):
 
     if bilietai_1 == 0:
         st.error(
@@ -196,7 +195,7 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
     st.success("Prognozė apskaičiuota!")
 
-    st.subheader("📊 Prognozės rezultatas")
+    st.subheader("Prognozės rezultatas")
 
     col1, col2 = st.columns(2)
 
@@ -216,7 +215,7 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
     st.divider()
 
-    st.subheader("📈 Apskaičiuoti rodikliai")
+    st.subheader("Apskaičiuoti rodikliai")
 
     col1, col2, col3 = st.columns(3)
 
@@ -240,7 +239,7 @@ if st.button("🔮 PROGNOZUOTI", use_container_width=True):
 
 st.divider()
 
-st.subheader("📅 Prognozės informacija")
+st.subheader("Prognozės informacija")
 
 col1, col2, col3 = st.columns(3)
 
