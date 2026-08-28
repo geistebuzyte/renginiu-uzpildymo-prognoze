@@ -450,13 +450,8 @@ if st.button(
     # REZULTATAS
     # ========================================================
 
-   st.success(
-    "Prognozė apskaičiuota."
-)
-
-st.subheader(
-    "Prognozės rezultatas"
-)
+   st.success("Prognozė apskaičiuota.")
+st.subheader("Prognozės rezultatas")
 
 col1, col2, col3 = st.columns(3)
 
