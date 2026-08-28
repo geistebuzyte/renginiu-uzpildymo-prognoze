@@ -486,27 +486,27 @@ st.progress(
     # PROGNOZĖS INTERVALAS
     # ========================================================
 
-    st.divider()
+st.divider()
 
-    st.subheader(
+st.subheader(
         "Prognozės neapibrėžtumas"
     )
 
 
-    col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 
 
-    with col1:
+with col1:
 
-        st.metric(
+st.metric(
             "Apytikslis 95 % prognozės intervalas",
             f"{intervalo_min:.1%} – {intervalo_max:.1%}"
         )
 
 
-    with col2:
+with col2:
 
-        st.metric(
+st.metric(
             "Galimas lankytojų intervalas",
             f"{lankytojai_min:,} – {lankytojai_max:,}".replace(
                 ",",
@@ -515,7 +515,7 @@ st.progress(
         )
 
 
-    st.caption(
+st.caption(
         "Intervalas apskaičiuotas pagal modelio RMSE "
         "ir 95 % normaliojo pasiskirstymo koeficientą."
     )
