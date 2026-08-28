@@ -87,8 +87,7 @@ with col2:
         "Bilietų prekybos laikotarpis",
         f"{prekybos_dienos} d."
     )
-
-
+    
 st.divider()
 
 
@@ -106,6 +105,13 @@ talpa = st.number_input(
     step=100
 )
 
+vidutine_bilieto_kaina = st.number_input(
+    "Vidutinė bilieto kaina (€)",
+    min_value=0.0,
+    value=20.0,
+    step=0.50,
+    format="%.2f"
+)
 
 bilietai_1 = st.number_input(
     "Parduotų bilietų skaičius po 1 dienos",
@@ -396,6 +402,10 @@ if st.button(
         prognoze * talpa
     )
 
+    prognozuojamos_pajamos = (
+    prognozuojami_lankytojai
+    * vidutine_bilieto_kaina
+)
 
     # ========================================================
     # 95 % APYTIKSLIS PROGNOZĖS INTERVALAS
@@ -440,42 +450,46 @@ if st.button(
     # REZULTATAS
     # ========================================================
 
-    st.success(
-        "Prognozė apskaičiuota."
+   st.success(
+    "Prognozė apskaičiuota."
+)
+
+st.subheader(
+    "Prognozės rezultatas"
+)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+
+    st.metric(
+        "Prognozuojamas galutinis užpildymas",
+        f"{prognoze:.1%}"
     )
 
+with col2:
 
-    st.subheader(
-        "Prognozės rezultatas"
-    )
-
-
-    col1, col2 = st.columns(2)
-
-
-    with col1:
-
-        st.metric(
-            "Prognozuojamas galutinis užpildymas",
-            f"{prognoze:.1%}"
+    st.metric(
+        "Prognozuojamas lankytojų skaičius",
+        f"{prognozuojami_lankytojai:,}".replace(
+            ",",
+            " "
         )
-
-
-    with col2:
-
-        st.metric(
-            "Prognozuojamas lankytojų skaičius",
-            f"{prognozuojami_lankytojai:,}".replace(
-                ",",
-                " "
-            )
-        )
-
-
-    st.progress(
-        prognoze
     )
 
+with col3:
+
+    st.metric(
+        "Prognozuojamos renginio pajamos",
+        f"{prognozuojamos_pajamos:,.2f} €".replace(
+            ",",
+            " "
+        )
+    )
+
+st.progress(
+    prognoze
+)
 
     # ========================================================
     # PROGNOZĖS INTERVALAS
