@@ -529,40 +529,34 @@ st.subheader(
     )
 
 
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
 
 
-    with col1:
-
-        st.metric(
+with col1:
+    st.metric(
             "Užpildymas po 30 d.",
             f"{uzpildytumas_po_men:.1%}"
         )
 
 
-    with col2:
-
-        st.metric(
+with col2:
+    st.metric(
             "Pardavimai po 1 d.",
             f"{bilietai_1}"
         )
 
-
-    with col3:
-
-        st.metric(
+with col3:
+    st.metric(
             "Pardavimai po 7 d.",
             f"{bilietai_7}"
         )
 
 
-    with col4:
-
-        st.metric(
+with col4:
+    st.metric(
             "Pardavimai po 30 d.",
             f"{bilietai_30}"
         )
-
 
     # ========================================================
     # PROGNOZĖS INFORMACIJA
