@@ -449,39 +449,35 @@ if st.button(
     # ========================================================
     # REZULTATAS
     # ========================================================
-
-   st.success("Prognozė apskaičiuota.")
-st.subheader("Prognozės rezultatas")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-
-    st.metric(
-        "Prognozuojamas galutinis užpildymas",
-        f"{prognoze:.1%}"
+    # Prognozuojamos pajamos
+    prognozuojamos_pajamos = (
+        prognozuojami_lankytojai
+        * vidutine_bilieto_kaina
     )
 
-with col2:
+    st.success("Prognozė apskaičiuota.")
 
-    st.metric(
-        "Prognozuojamas lankytojų skaičius",
-        f"{prognozuojami_lankytojai:,}".replace(
-            ",",
-            " "
+    st.subheader("Prognozės rezultatas")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Prognozuojamas galutinis užpildymas",
+            f"{prognoze:.1%}"
         )
-    )
 
-with col3:
-
-    st.metric(
-        "Prognozuojamos renginio pajamos",
-        f"{prognozuojamos_pajamos:,.2f} €".replace(
-            ",",
-            " "
+    with col2:
+        st.metric(
+            "Prognozuojamas lankytojų skaičius",
+            f"{prognozuojami_lankytojai:,}".replace(",", " ")
         )
-    )
 
+    with col3:
+        st.metric(
+            "Prognozuojamos renginio pajamos",
+            f"{prognozuojamos_pajamos:,.2f} €".replace(",", " ")
+        )
 st.progress(
     prognoze
 )
