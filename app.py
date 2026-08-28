@@ -522,9 +522,9 @@ st.caption(
     # APSKAIČIUOTI RODIKLIAI
     # ========================================================
 
-    st.divider()
+st.divider()
 
-    st.subheader(
+st.subheader(
         "Apskaičiuoti rodikliai"
     )
 
