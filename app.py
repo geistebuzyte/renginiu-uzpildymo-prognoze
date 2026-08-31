@@ -4,25 +4,17 @@ from scipy.special import expit
 from datetime import date
 
 
-# ============================================================
-# PUSLAPIO NUSTATYMAI
-# ============================================================
-
 st.set_page_config(
     page_title="Renginio lankomumo prognozė",
     layout="centered"
 )
 
 
-# ============================================================
-# PAGRINDINĖ INFORMACIJA
-# ============================================================
-
 st.title("Renginio lankomumo prognozė")
 
 st.write(
     "Įveskite renginio duomenis ir gaukite prognozuojamą "
-    "galutinį užpildymą bei lankytojų skaičių."
+    "galutinį užpildymą, lankytojų skaičių bei pajamas."
 )
 
 st.divider()
@@ -48,16 +40,14 @@ siandien = date.today()
 
 
 if renginio_data < bilietu_paleidimo_data:
-
     st.error(
         "Renginio data negali būti ankstesnė už "
         "bilietų prekybos pradžios datą."
     )
-
     st.stop()
 
 
-# Kiek realiai dienų liko iki renginio
+# Realus dienų skaičius nuo šiandien iki renginio
 dienos_iki_renginio = max(
     (renginio_data - siandien).days,
     0
@@ -74,7 +64,6 @@ col1, col2 = st.columns(2)
 
 
 with col1:
-
     st.metric(
         "Iki renginio liko",
         f"{dienos_iki_renginio} d."
@@ -82,12 +71,12 @@ with col1:
 
 
 with col2:
-
     st.metric(
         "Bilietų prekybos laikotarpis",
         f"{prekybos_dienos} d."
     )
-    
+
+
 st.divider()
 
 
@@ -105,6 +94,7 @@ talpa = st.number_input(
     step=100
 )
 
+
 vidutine_bilieto_kaina = st.number_input(
     "Vidutinė bilieto kaina (€)",
     min_value=0.0,
@@ -112,6 +102,7 @@ vidutine_bilieto_kaina = st.number_input(
     step=0.50,
     format="%.2f"
 )
+
 
 bilietai_1 = st.number_input(
     "Parduotų bilietų skaičius po 1 dienos",
@@ -160,22 +151,18 @@ if st.button(
     # --------------------------------------------------------
 
     if bilietai_7 < bilietai_1:
-
         st.error(
             "Parduotų bilietų skaičius po 7 dienų "
             "negali būti mažesnis nei po 1 dienos."
         )
-
         st.stop()
 
 
     if bilietai_30 < bilietai_7:
-
         st.error(
             "Parduotų bilietų skaičius po 30 dienų "
             "negali būti mažesnis nei po 7 dienų."
         )
-
         st.stop()
 
 
@@ -184,23 +171,19 @@ if st.button(
         or bilietai_7 > talpa
         or bilietai_30 > talpa
     ):
-
         st.error(
             "Parduotų bilietų skaičius negali būti "
             "didesnis už renginio talpą."
         )
-
         st.stop()
 
 
     if prekybos_dienos < 30:
-
         st.error(
             "Bilietų prekybos laikotarpis turi būti "
             "ne trumpesnis kaip 30 dienų, nes modelis "
             "naudoja pardavimus po 30 dienų."
         )
-
         st.stop()
 
 
@@ -211,27 +194,23 @@ if st.button(
     eps_change = 1e-6
 
 
-    # Pokytis tarp 1 ir 7 dienos
     pokytis_1_7 = (
         (bilietai_7 - bilietai_1)
         / (bilietai_1 + eps_change)
     )
 
 
-    # Pokytis tarp 1 ir 30 dienos
     pokytis_1_30 = (
         (bilietai_30 - bilietai_1)
         / (bilietai_1 + eps_change)
     )
 
 
-    # Užpildymas po 30 dienų
     uzpildytumas_po_men = (
         bilietai_30 / talpa
     )
 
 
-    # Arena
     arena_kodas = (
         1 if arena == "Arena" else 0
     )
@@ -242,19 +221,12 @@ if st.button(
     # --------------------------------------------------------
 
     coef = {
-
         "const": 0.2951,
-
         "Talpa": -0.1183,
-
         "Pokytis_1_7": 0.4962,
-
         "Pokytis_1_30": -0.4666,
-
         "Iki renginio dienos:": 0.3133,
-
         "Užpildytumas po mėn": 1.3086,
-
         "Arena": 0.2813
     }
 
@@ -264,46 +236,22 @@ if st.button(
     # --------------------------------------------------------
 
     means = {
-
-        "Talpa":
-            3984.6774193548385,
-
-        "Pokytis_1_7":
-            2.80322621,
-
-        "Pokytis_1_30":
-            8638710.45364094,
-
-        "Iki renginio dienos:":
-            107.12903225806451,
-
-        "Užpildytumas po mėn":
-            0.20507965027357142,
-
-        "Arena":
-            0.4838709677419355
+        "Talpa": 3984.6774193548385,
+        "Pokytis_1_7": 2.80322621,
+        "Pokytis_1_30": 8638710.45364094,
+        "Iki renginio dienos:": 107.12903225806451,
+        "Užpildytumas po mėn": 0.20507965027357142,
+        "Arena": 0.4838709677419355
     }
 
 
     stds = {
-
-        "Talpa":
-            2608.5791755851624,
-
-        "Pokytis_1_7":
-            86947696.79579352,
-
-        "Pokytis_1_30":
-            219556955.3296927,
-
-        "Iki renginio dienos:":
-            58.052669042296785,
-
-        "Užpildytumas po mėn":
-            0.2010505362618864,
-
-        "Arena":
-            0.49973978867804687
+        "Talpa": 2608.5791755851624,
+        "Pokytis_1_7": 86947696.79579352,
+        "Pokytis_1_30": 219556955.3296927,
+        "Iki renginio dienos:": 58.052669042296785,
+        "Užpildytumas po mėn": 0.2010505362618864,
+        "Arena": 0.49973978867804687
     }
 
 
@@ -312,24 +260,12 @@ if st.button(
     # --------------------------------------------------------
 
     X = {
-
-        "Talpa":
-            talpa,
-
-        "Pokytis_1_7":
-            pokytis_1_7,
-
-        "Pokytis_1_30":
-            pokytis_1_30,
-
-        "Iki renginio dienos:":
-            prekybos_dienos,
-
-        "Užpildytumas po mėn":
-            uzpildytumas_po_men,
-
-        "Arena":
-            arena_kodas
+        "Talpa": talpa,
+        "Pokytis_1_7": pokytis_1_7,
+        "Pokytis_1_30": pokytis_1_30,
+        "Iki renginio dienos:": prekybos_dienos,
+        "Užpildytumas po mėn": uzpildytumas_po_men,
+        "Arena": arena_kodas
     }
 
 
@@ -339,14 +275,10 @@ if st.button(
 
     X_scaled = {}
 
-
     for variable in X:
-
         X_scaled[variable] = (
-
             (X[variable] - means[variable])
             / stds[variable]
-
         )
 
 
@@ -355,9 +287,7 @@ if st.button(
     # --------------------------------------------------------
 
     linear_predictor = (
-
         coef["const"]
-
         + coef["Talpa"]
         * X_scaled["Talpa"]
 
@@ -378,13 +308,11 @@ if st.button(
     )
 
 
-    # Logistinės funkcijos transformacija
     prognoze = expit(
         linear_predictor
     )
 
 
-    # Užtikriname 0–100 %
     prognoze = float(
         np.clip(
             prognoze,
@@ -395,47 +323,53 @@ if st.button(
 
 
     # --------------------------------------------------------
-    # PROGNOZUOJAMAS LANKYTOJŲ SKAIČIUS
+    # LANKYTOJAI
     # --------------------------------------------------------
 
     prognozuojami_lankytojai = round(
         prognoze * talpa
     )
 
+
+    # --------------------------------------------------------
+    # PAJAMOS
+    # --------------------------------------------------------
+
     prognozuojamos_pajamos = (
-    prognozuojami_lankytojai
-    * vidutine_bilieto_kaina
-)
+        prognozuojami_lankytojai
+        * vidutine_bilieto_kaina
+    )
+
 
     # ========================================================
     # 95 % APYTIKSLIS PROGNOZĖS INTERVALAS
     # ========================================================
 
-    # Modelio RMSE, apskaičiuotas iš tavo mokymo duomenų
     rmse = 0.1032
 
-    # 95 % intervalo koeficientas
     z_95 = 1.96
 
-    # Apytikslė paklaida
-    intervalo_paklaida = z_95 * rmse
+    intervalo_paklaida = (
+        z_95 * rmse
+    )
 
 
-    # Apatinė intervalo riba
     intervalo_min = max(
         prognoze - intervalo_paklaida,
         0
     )
 
 
-    # Viršutinė intervalo riba
     intervalo_max = min(
         prognoze + intervalo_paklaida,
         1
     )
 
 
-    # Lankytojų intervalas
+    # --------------------------------------------------------
+    # LANKYTOJŲ INTERVALAS
+    # --------------------------------------------------------
+
     lankytojai_min = round(
         intervalo_min * talpa
     )
@@ -446,20 +380,38 @@ if st.button(
     )
 
 
-    # ========================================================
-    # REZULTATAS
-    # ========================================================
-    # Prognozuojamos pajamos
-    prognozuojamos_pajamos = (
-        prognozuojami_lankytojai
+    # --------------------------------------------------------
+    # PAJAMŲ INTERVALAS
+    # --------------------------------------------------------
+
+    pajamos_min = (
+        lankytojai_min
         * vidutine_bilieto_kaina
     )
 
-    st.success("Prognozė apskaičiuota.")
 
-    st.subheader("Prognozės rezultatas")
+    pajamos_max = (
+        lankytojai_max
+        * vidutine_bilieto_kaina
+    )
+
+
+    # ========================================================
+    # PROGNOZĖS REZULTATAS
+    # ========================================================
+
+    st.success(
+        "Prognozė apskaičiuota."
+    )
+
+
+    st.subheader(
+        "Prognozės rezultatas"
+    )
+
 
     col1, col2, col3 = st.columns(3)
+
 
     with col1:
         st.metric(
@@ -467,55 +419,93 @@ if st.button(
             f"{prognoze:.1%}"
         )
 
+
     with col2:
         st.metric(
             "Prognozuojamas lankytojų skaičius",
-            f"{prognozuojami_lankytojai:,}".replace(",", " ")
+            f"{prognozuojami_lankytojai:,}".replace(
+                ",",
+                " "
+            )
         )
+
 
     with col3:
         st.metric(
             "Prognozuojamos renginio pajamos",
-            f"{prognozuojamos_pajamos:,.2f} €".replace(",", " ")
+            f"{prognozuojamos_pajamos:,.2f} €".replace(
+                ",",
+                " "
+            )
         )
-st.progress(
-    prognoze
-)
+
+
+    st.progress(
+        prognoze
+    )
+
+
+    st.divider()
+
 
     # ========================================================
     # PROGNOZĖS INTERVALAS
     # ========================================================
 
-    st.progress(prognoze)
+    st.subheader(
+        "Prognozės intervalas"
+    )
 
-    st.divider()
-
-    st.subheader("Prognozės neapibrėžtumas")
 
     col1, col2 = st.columns(2)
 
+
     with col1:
         st.metric(
-            "Apytikslis 95 % prognozės intervalas",
+            "Apytikslis 95 % užpildymo intervalas",
             f"{intervalo_min:.1%} – {intervalo_max:.1%}"
         )
+
 
     with col2:
         st.metric(
             "Galimas lankytojų intervalas",
-            f"{lankytojai_min:,} – {lankytojai_max:,}".replace(",", " ")
+            f"{lankytojai_min:,} – {lankytojai_max:,}".replace(
+                ",",
+                " "
+            )
         )
 
-    st.caption(
-        "Intervalas apskaičiuotas pagal modelio RMSE "
-        "ir 95 % normaliojo pasiskirstymo koeficientą."
+
+    st.metric(
+        "Galimų pajamų intervalas",
+        f"{pajamos_min:,.2f} € – {pajamos_max:,.2f} €".replace(
+            ",",
+            " "
+        )
     )
+
+
+    st.caption(
+        "Intervalas yra apytikslis ir apskaičiuotas "
+        "pagal modelio RMSE = 0,1032 bei 95 % koeficientą."
+    )
+
 
     st.divider()
 
-    st.subheader("Apskaičiuoti rodikliai")
+
+    # ========================================================
+    # APSKAIČIUOTI RODIKLIAI
+    # ========================================================
+
+    st.subheader(
+        "Apskaičiuoti rodikliai"
+    )
+
 
     col1, col2, col3, col4 = st.columns(4)
+
 
     with col1:
         st.metric(
@@ -523,11 +513,13 @@ st.progress(
             f"{uzpildytumas_po_men:.1%}"
         )
 
+
     with col2:
         st.metric(
             "Pardavimai po 1 d.",
             f"{bilietai_1}"
         )
+
 
     with col3:
         st.metric(
@@ -535,17 +527,28 @@ st.progress(
             f"{bilietai_7}"
         )
 
+
     with col4:
         st.metric(
             "Pardavimai po 30 d.",
             f"{bilietai_30}"
         )
 
+
     st.divider()
 
-    st.subheader("Prognozės informacija")
+
+    # ========================================================
+    # PROGNOZĖS INFORMACIJA
+    # ========================================================
+
+    st.subheader(
+        "Prognozės informacija"
+    )
+
 
     col1, col2, col3 = st.columns(3)
+
 
     with col1:
         st.metric(
@@ -553,11 +556,13 @@ st.progress(
             siandien.strftime("%Y-%m-%d")
         )
 
+
     with col2:
         st.metric(
             "Renginio data",
             renginio_data.strftime("%Y-%m-%d")
         )
+
 
     with col3:
         st.metric(
@@ -565,7 +570,9 @@ st.progress(
             f"{dienos_iki_renginio} d."
         )
 
+
     st.divider()
+
 
     st.caption(
         "Prognozė apskaičiuota naudojant Beta regresijos "
@@ -573,10 +580,12 @@ st.progress(
         "duomenimis."
     )
 
+
     st.caption(
         "Apytikslis 95 % prognozės intervalas apskaičiuotas "
         "remiantis modelio RMSE = 0,1032."
     )
+
 
     st.caption(
         "Prognozavimo sistemą sukūrė Geistė Buzytė."
