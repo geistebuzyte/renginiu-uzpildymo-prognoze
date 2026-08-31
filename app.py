@@ -486,119 +486,84 @@ st.progress(
     # PROGNOZĖS INTERVALAS
     # ========================================================
 
-st.divider()
+    st.progress(prognoze)
 
-st.subheader(
-        "Prognozės neapibrėžtumas"
-    )
+    st.divider()
 
+    st.subheader("Prognozės neapibrėžtumas")
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col1:
-    st.metric(
+    with col1:
+        st.metric(
             "Apytikslis 95 % prognozės intervalas",
             f"{intervalo_min:.1%} – {intervalo_max:.1%}"
         )
 
-
-with col2:
-    st.metric(
+    with col2:
+        st.metric(
             "Galimas lankytojų intervalas",
-            f"{lankytojai_min:,} – {lankytojai_max:,}".replace(
-                ",",
-                " "
-            )
+            f"{lankytojai_min:,} – {lankytojai_max:,}".replace(",", " ")
         )
 
-
-st.caption(
+    st.caption(
         "Intervalas apskaičiuotas pagal modelio RMSE "
         "ir 95 % normaliojo pasiskirstymo koeficientą."
     )
 
+    st.divider()
 
-    # ========================================================
-    # APSKAIČIUOTI RODIKLIAI
-    # ========================================================
+    st.subheader("Apskaičiuoti rodikliai")
 
-st.divider()
+    col1, col2, col3, col4 = st.columns(4)
 
-st.subheader(
-        "Apskaičiuoti rodikliai"
-    )
-
-
-col1, col2, col3, col4 = st.columns(4)
-
-
-with col1:
-    st.metric(
+    with col1:
+        st.metric(
             "Užpildymas po 30 d.",
             f"{uzpildytumas_po_men:.1%}"
         )
 
-
-with col2:
-    st.metric(
+    with col2:
+        st.metric(
             "Pardavimai po 1 d.",
             f"{bilietai_1}"
         )
 
-with col3:
-    st.metric(
+    with col3:
+        st.metric(
             "Pardavimai po 7 d.",
             f"{bilietai_7}"
         )
 
-
-with col4:
-    st.metric(
+    with col4:
+        st.metric(
             "Pardavimai po 30 d.",
             f"{bilietai_30}"
         )
 
-    # ========================================================
-    # PROGNOZĖS INFORMACIJA
-    # ========================================================
-
     st.divider()
 
-    st.subheader(
-        "Prognozės informacija"
-    )
-
+    st.subheader("Prognozės informacija")
 
     col1, col2, col3 = st.columns(3)
 
-
     with col1:
-
         st.metric(
             "Prognozės data",
             siandien.strftime("%Y-%m-%d")
         )
 
-
     with col2:
-
         st.metric(
             "Renginio data",
             renginio_data.strftime("%Y-%m-%d")
         )
 
-
     with col3:
-
         st.metric(
             "Iki renginio liko",
             f"{dienos_iki_renginio} d."
         )
-
-
-    # ========================================================
-    # INFORMACIJA APIE MODELĮ
-    # ========================================================
 
     st.divider()
 
@@ -608,12 +573,10 @@ with col4:
         "duomenimis."
     )
 
-
     st.caption(
         "Apytikslis 95 % prognozės intervalas apskaičiuotas "
         "remiantis modelio RMSE = 0,1032."
     )
-
 
     st.caption(
         "Prognozavimo sistemą sukūrė Geistė Buzytė."
